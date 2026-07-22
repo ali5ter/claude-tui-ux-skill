@@ -1,0 +1,38 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Thumbnails
+Thumbs.db
+
+# Backup files
+*.backup
+*.bak
+*~
+
+# Evaluation outputs
+TUI_UX_EVALUATION_*/
+*.log
+
+# Recordings generated during testing
+*.cast
+*.gif
+*.mp4
+*.webm
+tui-ux-frames/
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+.project
+.settings/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+CLAUDE.md
