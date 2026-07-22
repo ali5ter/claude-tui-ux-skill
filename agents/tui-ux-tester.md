@@ -40,7 +40,8 @@ You do not spawn sub-agents. You receive:
 
 If frame PNGs exist, `Read` them directly — you have image vision, use it. This is not optional for criteria 3
 (Layout), 4 (Visual Design), and 6 (Help) — do not score those from code alone if screenshots are available. If
-only a `.cast` file exists, read it as text: it's asciicast v2, newline-delimited JSON — the `"o"` events contain
+only a `.cast` file exists, read it as text: it's asciicast v2 or v3 (depending on the asciinema version used),
+both newline-delimited JSON — the `"o"` events contain
 raw terminal output including ANSI codes, which tells you what was drawn and in what colors even without
 rendering it. If truly nothing visual exists, say so explicitly wherever it limits your confidence.
 

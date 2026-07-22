@@ -40,7 +40,9 @@ tmux kill-session -t "$SESSION" 2> /dev/null || true
 tmux new-session -d -s "$SESSION" -x 100 -y 30 "$CMD"
 
 echo "Recording $CMD (via tmux session $SESSION) to $CAST"
-asciinema rec --quiet --overwrite --command "tmux attach -t $SESSION" "$CAST" &
+# A calling shell with TERM=dumb (or unset) makes `tmux attach` fail with
+# "terminal does not support clear" inside asciinema's own pty — force a real term type.
+TERM=xterm-256color asciinema rec --quiet --overwrite --command "tmux attach -t $SESSION" "$CAST" &
 readonly REC_PID=$!
 
 sleep 1.5

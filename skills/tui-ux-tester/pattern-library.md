@@ -473,7 +473,7 @@ vhs demo.tape
 
 ### asciinema
 
-**What it is:** a terminal-session recorder that captures a session as a `.cast` file — asciicast v2 is a
+**What it is:** a terminal-session recorder that captures a session as a `.cast` file — asciicast v2/v3 is a
 newline-delimited JSON format: the first line is a header object (`version`, `width`, `height`, and optional
 metadata like `env`), and every following line is a `[time, code, data]` event array, where `code` is `"o"`
 for output, `"i"` for input, `"r"` for a resize, or `"m"` for a marker. **When to reach for it:** the app can't

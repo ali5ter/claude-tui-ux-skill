@@ -59,7 +59,7 @@ GIF). If found:
 - A `.tape` file is best: re-run it (`vhs the.tape -o /tmp/tui-ux-evidence/demo.mp4`) to get a fresh, reproducible
   recording against the current build.
 - A `.gif`/`.mp4`/`.webm` with no tape source is still usable directly.
-- A `.cast` file is directly readable as text (asciicast v2 is newline-delimited JSON) — no extraction needed.
+- A `.cast` file is directly readable as text (asciicast v2/v3 is newline-delimited JSON) — no extraction needed.
 
 **b. Record a fresh session** if VHS or (tmux + asciinema) is available (`which vhs`, `which tmux asciinema`):
 

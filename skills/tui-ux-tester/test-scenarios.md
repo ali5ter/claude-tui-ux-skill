@@ -586,7 +586,7 @@ the above, requiring a fresh one). Evaluate the rendering from the raw recording
 **Test Flow**:
 
 ```bash
-# asciicast v2 is newline-delimited JSON: header line, then [time, "o"/"i", data] events
+# asciicast v2/v3 is newline-delimited JSON: header line, then [time, "o"/"i", data] events
 head -1 demo.cast                                  # header: version, width, height, term
 
 # Count full-screen redraws (how "flickery" is the app?)
