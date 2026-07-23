@@ -36,3 +36,4 @@ tmp/
 temp/
 *.tmp
 CLAUDE.md
+CLAUDE.md.backup.*
