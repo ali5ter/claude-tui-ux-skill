@@ -1,8 +1,8 @@
 ---
 name: tui-ux-tester
 description: Expert UX evaluator for terminal user interfaces (TUIs) — full-screen interactive terminal apps built with frameworks like Bubble Tea, Textual, or Ratatui. Use when reviewing TUI usability, keybindings, layout, color/theming, or terminal app onboarding.
-version: 1.0.0
-allowed-tools: Read, Bash, AskUserQuestion, Agent
+version: 1.1.0
+allowed-tools: Read, Write, Bash, WebSearch, AskUserQuestion, Agent
 ---
 
 # TUI UX Tester
@@ -161,7 +161,18 @@ Launch `tui-ux-tester:tui-ux-tester`. Pass:
 Clean up with: rm -rf TUI_UX_EVALUATION_*/
 ```
 
-## Learning mode
+## Learning: two mechanisms, not one
+
+**This skill learns automatically, on every evaluation, with no separate request needed.** The synthesizer
+agent's Step 5 checks whether the TUI it just evaluated demonstrated a genuinely new, generalizable pattern
+and — if so — appends it to `pattern-library.md` directly as part of the normal evaluation, dated and
+attributed to that evaluation. This is the default "continue to learn" behavior; you don't have to ask for it.
+
+**Learning mode is a second, separate mechanism** for a job per-evaluation growth can't do: proactively
+scanning *external* sources for tools this skill has never evaluated and therefore could never learn from
+organically. It's opt-in, not automatic, because it's a different kind of operation — it does live web
+research (time, external requests, source-quality judgment) rather than reusing evidence already gathered for
+a user's actual task, so it runs when explicitly asked for rather than as a side effect of every review.
 
 If the user asks the skill to "research new TUI patterns," "update the pattern library," or similar — instead
 of the evaluation flow above, read `pattern-library.md`, use `WebSearch`/`Read` to find recent releases,

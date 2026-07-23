@@ -74,6 +74,28 @@ mkdir -p "$EVAL_DIR"
 
 Tell the user the directory name so they can find all outputs.
 
+### Step 5: Grow the pattern library, if this evaluation earned it
+
+This is what makes "continue to learn" true by default rather than something the user has to separately ask
+for (see `SKILL.md`'s learning mode, which is for a different job: proactively scanning external sources for
+tools this skill hasn't encountered yet). Every evaluation is itself a chance to learn from the TUI just
+examined — take it, but hold it to the same bar as an existing `pattern-library.md` entry.
+
+Ask: did this TUI demonstrate a **specific, named, generalizable pattern** — not just "this tool is decent" —
+that isn't already in `pattern-library.md`? Or does its codebase use a **framework/tool** not yet cataloged
+there? If yes to either, append an entry directly (you have `Write` and `acceptEdits`; don't ask permission
+for this one write):
+
+- Match the existing file's format exactly: a named pattern with a concrete "why it works" rationale, not a
+  bare label or generic praise.
+- Tag it with a dated attribution comment immediately above the entry:
+  `<!-- added YYYY-MM-DD, observed evaluating {tui_command} -->`.
+- If you're not confident the pattern generalizes beyond this one project, don't add it — write it to memory
+  instead (see below) so it can be confirmed against a second sighting before it's promoted.
+
+Most evaluations will find nothing new here, and that's fine — don't strain to manufacture an entry. Skip this
+step silently rather than padding the library with restated existing patterns.
+
 ---
 
 ## Evaluation Framework (11 Criteria)
@@ -419,13 +441,13 @@ evaluation data already lives in the timestamped output directory.
 
 **Good candidates to remember:**
 
-- Patterns seen across similar TUIs (e.g., "Bubble Tea apps rarely implement a `?` help overlay even though
-  `bubbles/help` ships in the box")
+- A pattern spotted once that wasn't confident enough to promote directly to `pattern-library.md` in Step 5 —
+  note it here so a second sighting in a future evaluation can confirm it generalizes before it's promoted
 - Baseline scores for previously evaluated tools, for progress tracking
 - Particularly instructive good or bad UX patterns worth citing in future evaluations, distinct from what's
   already in `pattern-library.md`
-- New tools/frameworks/techniques noticed during an evaluation that aren't yet in `pattern-library.md` — flag
-  them for the skill's learning mode rather than silently letting the observation evaporate
+- Frameworks/tools/techniques noticed that seem notable but you're unsure belong in the library yet — the
+  skill's learning mode can pick these up and cross-check them against external sources on its next run
 
 **Do not save:** full evaluation reports, raw recordings/frames, or project-specific implementation details.
 

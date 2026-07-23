@@ -19,7 +19,7 @@ obtaining a real recording of the TUI running before scoring it, using whatever 
 2. **A fresh VHS recording** — the Charm ecosystem's own scripted terminal recorder, standard for Bubble Tea
    projects, produces a reproducible MP4/GIF from a declarative script.
 3. **A fresh asciinema recording** — drives the TUI inside a `tmux` session while `asciinema` records it,
-   works with any framework, produces a plain-text-analyzable `.cast` file (asciicast v2).
+   works with any framework, produces a plain-text-analyzable `.cast` file (asciicast v2/v3).
 4. **A user-provided video, GIF, or `.cast` file** — if automated recording isn't possible (auth-gated flows,
    no recording tooling installed), the skill asks for one instead of guessing.
 5. **A live `tmux capture-pane` probe** — runs regardless, as a fast structural check (crashes, resize
@@ -33,8 +33,9 @@ explicitly — layout and color findings are marked reduced-confidence rather th
 - 11-criteria UX framework tailored to full-screen terminal apps (8 core + 3 extended), 1–5 scoring per
   dimension, with rubrics grounded in real findings from published Bubble Tea projects
 - A living `pattern-library.md` cataloging concrete patterns from well-regarded TUIs (btop, lazygit, k9s, yazi,
-  Textual apps, the Charm ecosystem) and terminal recording/testing tooling — extended over time via a
-  **learning mode** the skill runs on request ("research new TUI patterns")
+  Textual apps, the Charm ecosystem) and terminal recording/testing tooling — grows automatically after every
+  evaluation that surfaces something new, and further via an on-request **learning mode** for proactive
+  external research (see "How learning works" below)
 - Active testing: drives the real TUI via `tmux`, captures its actual rendered output, and reads screenshots
   directly rather than inferring appearance from source
 - Persistent memory across evaluations for cross-project pattern tracking
@@ -83,6 +84,37 @@ Research new TUI patterns and update the pattern library
 
 The skill detects which TUI to evaluate from the current directory or your message, gathers visual evidence
 (recording an interaction walkthrough if it can, asking for one if it can't), then runs the evaluation.
+
+### Testing this plugin against wwlog or unspool
+
+Both are real Bubble Tea TUIs and were the grounding examples used while building this plugin, so they're
+good first targets:
+
+```bash
+cd ~/Documents/Projects/wwlog    # or unspool
+```
+
+then, in that Claude Code session: `Review this TUI for UX issues`.
+
+Two things to know before you do:
+
+- **`wwlog` needs data in range to reach its TUI.** It defaults to the last 7 days; if your local archive
+  doesn't cover that window it exits with an error instead of launching. Either run `wwlog --archive` first,
+  or point the skill at a range you know is covered (`wwlog --start <date> --end <date>`) — `wwlog --status`
+  shows what's archived. `unspool` needs a completed `unspool --login` first.
+- **Recording quality depends on what's installed.** `tmux` alone (near-universal) gets you the structural
+  probe; installing `vhs` and/or `asciinema`+`ffmpeg`/`agg` (see the table below) gets you real rendered
+  frames the synthesizer agent can actually look at, which is what criteria 3/4/6 need for a non-reduced-
+  confidence score. All three recording paths were smoke-tested end to end against `wwlog` while building
+  this plugin — `tmux-probe.sh` genuinely caught a resize bug (a modal's border clips with no bottom edge at
+  40x10), and both `record-vhs.sh` and `record-asciinema.sh` produced real, correctly rendered frames.
+
+You can also test without a full evaluation run — each script in `skills/tui-ux-tester/scripts/` is a
+standalone template you can run directly:
+
+```bash
+skills/tui-ux-tester/scripts/tmux-probe.sh "./wwlog --start 2026-05-23 --end 2026-06-22" /tmp/probe-out
+```
 
 ### What gets evaluated
 
@@ -140,12 +172,11 @@ The plugin provides two components:
 - **Skill** (`tui-ux-tester`) — detects the target TUI, gathers visual evidence (existing recording → fresh VHS
   recording → fresh asciinema recording → user-provided file → source-only fallback, always paired with a
   `tmux capture-pane` interaction probe), asks clarifying questions if needed, spawns an Explore agent and an
-  interaction-probe agent in parallel, then passes all collected evidence to the synthesizer agent. It also runs
-  a **learning mode** on request, using web research to extend `pattern-library.md` with newly notable TUI tools
-  and patterns.
+  interaction-probe agent in parallel, then passes all collected evidence to the synthesizer agent.
 - **Agent** (`tui-ux-tester:tui-ux-tester`) — receives pre-collected evidence (recordings, frames, codebase map,
   interaction probe) and synthesizes it into a scored 11-criteria evaluation, `Read`-ing screenshots directly
-  rather than inferring appearance from code, producing all output artifacts.
+  rather than inferring appearance from code, producing all output artifacts — and, as its last step, checking
+  whether the evaluation itself surfaced a pattern-library-worthy pattern (see "How learning works" below).
 
 The skill handles recording and parallel evaluation directly because the platform does not support sub-agents
 spawning further sub-agents. The agent runs in `acceptEdits` permission mode to auto-approve artifact writes,
@@ -163,6 +194,51 @@ having them installed produces meaningfully better evidence:
 | [`asciinema`](https://asciinema.org) | Text-analyzable `.cast` recordings, any framework | `brew install asciinema` |
 | [`ffmpeg`](https://ffmpeg.org) | Extract still frames from video/GIF for visual review | `brew install ffmpeg` |
 | [`agg`](https://github.com/asciinema/agg) | Render `.cast` files to GIF for frame extraction | `brew install agg` |
+
+## How learning works
+
+The pattern library grows two ways, and only one of them needs you to ask for it:
+
+- **Automatically, every evaluation.** The synthesizer agent's last step checks whether the TUI it just
+  reviewed demonstrated a genuinely new, generalizable pattern (not "this tool is decent" — a specific,
+  named pattern with a "why it works" rationale, held to the same bar as an existing entry) and appends it to
+  `pattern-library.md` directly, dated and attributed to that evaluation. Most evaluations find nothing new
+  here — that's expected, not a failure — but when something does turn up, it's captured without a separate
+  request. This is the default "continue to learn" behavior.
+- **On request, via proactive research.** Ask the skill to "research new TUI patterns" or "update the pattern
+  library" and it does live web research (terminaltrove.com, the Charm/Textualize blogs, r/commandline,
+  GitHub's `topic:tui` trending) to find tools it hasn't had a reason to evaluate yet — something organic,
+  per-evaluation growth can't do on its own, since it can only learn from projects a user actually asks about.
+  This one *is* opt-in, deliberately: it's a different kind of operation (external requests, source-quality
+  judgment, real time) than reusing evidence already gathered for an actual evaluation, so it runs when asked
+  rather than as a side effect of every review.
+
+## Sources: what's in the pattern library today
+
+`skills/tui-ux-tester/pattern-library.md` is the skill's curated, versioned knowledge base — not a live feed;
+it changes only through the two mechanisms above. As of this writing it covers:
+
+- **12 exemplar TUIs**, each with named, fact-checked patterns (not generic praise): `btop`, `lazygit`, `k9s`,
+  `yazi`, `tig`, Miller-column browsers (`ranger`/`nnn`/`yazi`), `ncdu`, `ripgrep`+`fzf` composability,
+  `gh-dash`, Ratatui showcase apps (`gitui`, `bottom`, `bandwhich`, `joshuto`), Textual-based apps (`posting`,
+  `dolphie`, `frogmouth`), and the emerging AI-agent-TUI category (streaming/thinking-indicator patterns)
+- **The Charm ecosystem** (Bubble Tea, Lip Gloss, Bubbles, Huh, Glamour, VHS, gum) — what each library is for
+  and one notable convention it encourages, since both local reference projects (`wwlog`, `unspool`) are built
+  on this stack
+- **Layout paradigms** — persistent multi-panel, Miller columns, drill-down stack, header+scrollable-list,
+  widget dashboard — each tied to which exemplar tool uses it and why
+- **A keybinding-convention reference table** (`?`, `q`, `Ctrl+C`, `Esc`, `Tab`, `/`, `:`, `j`/`k`, `g`/`G`,
+  `Enter`, `1`-`9`, `Ctrl+P`) mapping each to its near-universal meaning and which tools establish it
+- **Color & theming conventions** — semantic color mapping, `NO_COLOR` (per no-color.org), adaptive
+  light/dark rendering, truecolor fallback, monochrome-safe design
+- **Recording & testing tooling** — VHS, asciinema, `tmux capture-pane`, `ffmpeg`/`agg` — what each is,
+  when to reach for it, one-line usage
+
+It also draws on two real Bubble Tea projects for grounded, cited good/bad examples throughout
+`agents/tui-ux-tester.md`'s rubrics: `wwlog`'s onboarding splash and `--json`/`--report`/`--offline` pipeline
+parity, and several specific findings from `unspool`'s own UX review (a one-way-door mute action, a missing
+`?` help overlay despite `bubbles/help` already being a dependency, dead/no-op config options, an inconsistent
+Shift-chord keybinding, and an optimistic UI update with no rollback on failure).
 
 ## Safety and quality notes
 

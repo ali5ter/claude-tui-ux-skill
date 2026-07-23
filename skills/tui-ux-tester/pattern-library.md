@@ -4,12 +4,15 @@ This file is a curated catalog of terminal UI design patterns and exemplar tools
 agent draws on when it evaluates a TUI — used to name what a stronger version of a given pattern looks like
 elsewhere, not as a checklist to fill in mechanically (see `agents/tui-ux-tester.md`).
 
-**This file is intentionally living and append-only.** It grows over time via the skill's "learning mode"
-(triggered by asking the skill to "research new TUI patterns" or "update the pattern library" — see
-`SKILL.md`), which searches for newly popular tools and patterns and appends them below with a short
-rationale. New entries added by learning mode should be dated and attributed to the source that surfaced
-them (e.g. `<!-- added 2026-08-03, via terminaltrove.com trending -->`), and existing entries should only be
-removed once they're confirmed obsolete, not merely unfashionable.
+**This file is intentionally living and append-only, and it grows two ways.** The default, automatic path:
+every evaluation's synthesizer agent checks whether the TUI it just reviewed demonstrated a genuinely new,
+generalizable pattern and appends it here directly if so — no separate request needed (see
+`agents/tui-ux-tester.md` Step 5). The deliberate path: asking the skill to "research new TUI patterns" or
+"update the pattern library" triggers a proactive web search for tools this skill hasn't evaluated yet and
+therefore couldn't have learned from organically (see `SKILL.md`'s learning mode). Either way, new entries are
+dated and attributed to how they were found (e.g. `<!-- added 2026-07-30, observed evaluating ./mytui -->` or
+`<!-- added 2026-08-03, via terminaltrove.com trending -->`), and existing entries are only removed once
+they're confirmed obsolete, not merely unfashionable.
 
 ## Exemplar TUIs
 
@@ -518,11 +521,21 @@ agg demo.cast demo.gif
 
 ## How this library grows
 
-This file has no fixed end state — it's meant to accumulate. When the skill's learning mode runs (triggered by
-a request like "research new TUI patterns" or "update the pattern library," per `SKILL.md`), it searches
-sources like terminaltrove.com, the Charm and Textualize blogs, r/commandline, and GitHub's `topic:tui`
-trending list, and appends new tool subsections or pattern entries here with a dated attribution comment and a
-concrete "why it works" rationale — never a bare tool name with no explanation. Existing entries are only
-removed once learning mode has confirmed they're genuinely obsolete (the tool is unmaintained and superseded,
-or the pattern has been supplanted by something demonstrably better), never simply because something newer
-exists alongside them.
+This file has no fixed end state — it's meant to accumulate, through two mechanisms:
+
+**Automatically, every evaluation.** After scoring a TUI, the synthesizer agent checks whether it demonstrated
+a pattern not already cataloged here and, if so, appends it directly — dated and attributed to the evaluation
+that surfaced it (see `agents/tui-ux-tester.md` Step 5). This is the default; it needs no separate request and
+is why the library grows even if learning mode below is never explicitly invoked.
+
+**On request, via proactive research.** When the skill's learning mode runs (triggered by a request like
+"research new TUI patterns" or "update the pattern library," per `SKILL.md`), it searches sources like
+terminaltrove.com, the Charm and Textualize blogs, r/commandline, and GitHub's `topic:tui` trending list for
+tools this skill hasn't had a chance to evaluate yet, and appends new tool subsections or pattern entries here
+with a dated attribution comment. This mechanism exists because organic per-evaluation growth can only ever
+learn from projects a user actually asks about — it can't discover something new on its own.
+
+Either way, every addition needs a concrete "why it works" rationale — never a bare tool name with no
+explanation. Existing entries are only removed once confirmed genuinely obsolete (the tool is unmaintained and
+superseded, or the pattern has been supplanted by something demonstrably better), never simply because
+something newer exists alongside them.
