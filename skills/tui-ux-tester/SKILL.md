@@ -1,7 +1,7 @@
 ---
 name: tui-ux-tester
 description: Expert UX evaluator for terminal user interfaces (TUIs) — full-screen interactive terminal apps built with frameworks like Bubble Tea, Textual, or Ratatui. Use when reviewing TUI usability, keybindings, layout, color/theming, or terminal app onboarding; when evaluating a recording (asciinema cast, video, or GIF) of a TUI; or when asked to research new TUI patterns or update the TUI pattern library.
-version: 1.1.1
+version: 1.1.2
 allowed-tools: Read, Write, Bash, WebSearch, AskUserQuestion, Agent
 ---
 
