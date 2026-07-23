@@ -75,17 +75,47 @@ Inside Claude Code, run:
 
 ## Usage
 
-After installation, ask Claude to evaluate any TUI in your session:
+The skill has two modes — **evaluating a TUI** and **researching / growing the pattern library** — and it
+detects which you want from your phrasing.
+
+### Evaluate a TUI
+
+Ask Claude to review a terminal app in your session. The skill detects the target from the current directory
+or from your message, gathers visual evidence, then scores it against the 11 criteria.
 
 ```text
-Review this TUI for UX issues
-Evaluate the keybinding scheme in this terminal app
-Check the layout and color design of this tool
+Review this TUI for UX issues                          # auto-detect the target from the current directory
+Review my-tool's TUI                                   # name the target explicitly
+Evaluate the keybinding scheme in this terminal app    # focus on one area
+Check the layout and color design of this tool         # focus on visual criteria
+```
+
+**Bring your own recording.** If the TUI can't be driven headlessly (an OAuth device flow, a login wall) or
+you already have a capture, hand the skill a recording and it evaluates from that instead of trying to record
+one itself:
+
+```text
+Here's an asciinema cast of my TUI — evaluate its UX: ./demo.cast
+Evaluate this TUI from this recording: ~/Downloads/app-demo.mp4
+```
+
+It accepts an asciinema `.cast` (read directly as text) or a video/GIF (frames extracted for visual review).
+
+**No recording tooling, or source-only on purpose.** With none of `vhs`/`asciinema`/`tmux` available — or if
+you ask for it — the skill evaluates from source plus a `tmux` structural probe and marks the visual criteria
+(layout, color, help) as reduced-confidence rather than guessing at them.
+
+### Research / grow the pattern library
+
+A separate operation — no TUI is evaluated. The skill does live web research and appends new, attributed
+entries to `pattern-library.md` (see "How learning works" below):
+
+```text
 Research new TUI patterns and update the pattern library
 ```
 
-The skill detects which TUI to evaluate from the current directory or your message, gathers visual evidence
-(recording an interaction walkthrough if it can, asking for one if it can't), then runs the evaluation.
+The library also grows automatically after any evaluation that surfaces something new, so you rarely need to
+ask for this explicitly.
 
 ### Testing this plugin against wwlog or unspool
 
