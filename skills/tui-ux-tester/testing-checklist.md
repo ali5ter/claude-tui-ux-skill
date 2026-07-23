@@ -59,9 +59,8 @@ extracted frames, `.cast`-as-text, or source-only) for anything touching layout,
 - [ ] One consistent scheme (arrows, vim-style `hjkl`/`gg`/`G`, or both) is applied across every view
 - [ ] The same key does the same category of thing in every view it appears in
 - [ ] Case-sensitive chords (`Shift+letter`) are avoided unless there's genuinely no other option
-- [ ] No Shift-chord sits as the lone exception among otherwise bare single-key bindings (real example:
-      `unspool`'s `A`/`S` are the only Shift-required keys against an all-lowercase scheme — see
-      `~/Documents/Projects/unspool/RECOMMENDATIONS.md`)
+- [ ] No Shift-chord sits as the lone exception among otherwise bare single-key bindings (real-world failure:
+      a lone `Shift`+letter action against an otherwise all-lowercase scheme, easy to mis-press)
 
 ### Focus & Tab Movement
 
@@ -183,9 +182,8 @@ extracted frames, `.cast`-as-text, or source-only) for anything touching layout,
 ### Optimistic UI & Rollback
 
 - [ ] Optimistic UI updates (action appears to succeed immediately) roll back visibly on failure
-- [ ] No optimistic update leaves a stale/incorrect state silently on failure (real counter-example:
-      `unspool`'s playlist/queue removal never restores the row — see
-      `~/Documents/Projects/unspool/RECOMMENDATIONS.md`)
+- [ ] No optimistic update leaves a stale/incorrect state silently on failure (real-world failure: a list
+      removal that never restores the row when the underlying delete fails)
 - [ ] Failed operations surface a specific error, not just a generic status string
 
 ### Fallback & Degraded-Mode Notices
@@ -210,16 +208,15 @@ extracted frames, `.cast`-as-text, or source-only) for anything touching layout,
 
 ### Discoverability Gaps
 
-- [ ] No binding exists that is undiscoverable anywhere in-app (real counter-example: `unspool` ships
-      `bubbles/help` as a dependency but never wires a `?` overlay — see
-      `~/Documents/Projects/unspool/RECOMMENDATIONS.md`)
+- [ ] No binding exists that is undiscoverable anywhere in-app (real-world failure: a TUI that ships
+      `bubbles/help` as a dependency but never wires a `?` overlay, leaving some bindings undiscoverable)
 - [ ] Destructive or advanced actions are not hidden entirely from any help surface
 
 ### External Docs Parity
 
 - [ ] A README, demo GIF, or recording exists for evaluation before installing
-- [ ] The README's keybindings table (if any) matches actual in-app behavior exactly (real example:
-      `wwlog`'s README key-bindings table — see `~/Documents/Projects/wwlog/README.md`)
+- [ ] The README's keybindings table (if any) matches actual in-app behavior exactly (real-world practice:
+      a README key-bindings table kept in exact sync with in-app behavior)
 - [ ] Demo assets (VHS `.tape`, `.gif`) are current with the build under test, not stale
 
 ## 7. Consistency & Predictability
@@ -238,9 +235,9 @@ extracted frames, `.cast`-as-text, or source-only) for anything touching layout,
 
 ### Config Wiring
 
-- [ ] Every documented config option actually takes effect — no dead/no-op settings (real counter-example:
-      `unspool`'s `theme`, `thumbnails`, `view_mode`, `dearrow` are documented but never read by the TUI — see
-      `~/Documents/Projects/unspool/RECOMMENDATIONS.md`)
+- [ ] Every documented config option actually takes effect — no dead/no-op settings (real-world failure:
+      config keys that are documented and have defaults but are never read by the TUI, so setting them
+      silently no-ops)
 - [ ] Config file location follows a standard convention (XDG Base Directory or documented equivalent)
 - [ ] Config precedence (flags > env > project > user > default, or whatever order the app defines) is
       documented
@@ -329,10 +326,9 @@ extracted frames, `.cast`-as-text, or source-only) for anything touching layout,
 
 ### Reversibility
 
-- [ ] Every action described (in-app or in docs) as reversible has a working, reachable reverse path (real
-      counter-example: `unspool`'s `UnmuteChannel` exists in the store layer but nothing in the TUI or CLI
-      calls it, despite the product's own stated promise that muting is reversible — see
-      `~/Documents/Projects/unspool/RECOMMENDATIONS.md`)
+- [ ] Every action described (in-app or in docs) as reversible has a working, reachable reverse path
+      (real-world failure: a reversible-by-design action whose reverse path is never wired to any key or
+      command, despite docs promising it)
 - [ ] Irreversible actions are labeled as such before confirmation
 
 ### Crash & State Recovery
@@ -367,8 +363,7 @@ extracted frames, `.cast`-as-text, or source-only) for anything touching layout,
 - [ ] A non-TUI mode exists for scripting/CI (`--json`, `--report`, `--export`, or equivalent)
 - [ ] `--json`/`--export` output reflects the same underlying data model as the TUI (not a stale or
       different view) — verify with a side-by-side comparison of a TUI screen and the corresponding export
-      (real example: `wwlog`'s `--json`/`--report`/`--export` mirror the TUI's data exactly — see
-      `~/Documents/Projects/wwlog/README.md`)
+      (real-world practice: `--json`/`--report`/`--export` output that mirrors the TUI's data exactly)
 - [ ] Every major data view reachable in the TUI has a corresponding non-interactive export path, not just one
 
 ### Scripting Ergonomics

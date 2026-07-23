@@ -251,9 +251,8 @@ are about the interaction model these tools share, not one specific implementati
 
 ## Charm ecosystem
 
-The Charm (Charmbracelet) stack is the dominant Go TUI toolkit and the one both local reference projects
-(`wwlog`, `unspool`) are built on. It's a set of composable libraries rather than one framework, so a project
-typically pulls in only the pieces it needs.
+The Charm (Charmbracelet) stack is the dominant Go TUI toolkit. It's a set of composable libraries rather than one
+framework, so a project typically pulls in only the pieces it needs.
 
 ### Bubble Tea
 
@@ -290,7 +289,7 @@ than rebuilt from scratch per project.
 keybindings as a typed `key.Binding` map with both a short (footer-hint) and full (overlay) representation, so
 a context-sensitive footer and a full `?` help screen can be generated from the *same* binding definitions
 instead of two separately maintained lists that can drift out of sync. This is a structural fix for exactly
-the failure this skill flags most often in real projects (see the `unspool` help-overlay finding cited in
+the failure this skill flags most often in real projects (see the help-overlay bad example in
 `agents/tui-ux-tester.md`) — `bubbles/help` is present as a dependency in many projects specifically because
 it makes the correct behavior the path of least resistance, yet it's still frequently left unused.
 
@@ -324,8 +323,8 @@ rendering often gets bolted on late in a project.
 output settings as a small DSL, and `vhs` replays it in a headless virtual terminal to produce a GIF, MP4,
 WebM, or raw frames. See the Recording & testing tooling section below for usage details.
 
-**Notable convention it encourages:** committing the `.tape` source alongside the rendered demo asset (as
-`wwlog` does with `examples/wwlog_demo.tape`) rather than committing only the output GIF. A tape file is a
+**Notable convention it encourages:** committing the `.tape` source alongside the rendered demo asset (as many
+Charm-ecosystem projects do) rather than committing only the output GIF. A tape file is a
 reproducible script, not a one-off screen capture — re-running it against a new build regenerates an
 up-to-date demo automatically, so the README's demo never silently drifts out of sync with the app's actual
 current behavior the way a hand-recorded GIF inevitably does.
@@ -376,9 +375,8 @@ rather than data that benefits from parent/child correlation.
 
 A fixed header/status area stays pinned at the top (or bottom) while a single scrollable list occupies the
 remaining space — the simplest paradigm, and the right default when there's genuinely one primary view.
-**Used by:** `ncdu` (path breadcrumb header, size-sorted file list below), `wwlog`'s Log tab (date/points
-summary header, scrollable per-day entries below). This paradigm works precisely because it resists
-unnecessary complexity: a tool with one core task doesn't need multi-pane real estate it will never fill.
+**Used by:** `ncdu` (path breadcrumb header, size-sorted file list below). This paradigm works precisely because
+it resists unnecessary complexity: a tool with one core task doesn't need multi-pane real estate it will never fill.
 
 ### Widget dashboard
 
@@ -398,11 +396,11 @@ other tool they use.
 | Key | Near-universal meaning | Tools that establish this convention |
 |---|---|---|
 | `?` | Open full keybinding help/reference overlay | `k9s`, `gh-dash`, `bottom`, most Bubble Tea apps via `bubbles/help` |
-| `q` | Quit the application (or the current view if nested) | `btop`, `k9s`, `lazygit`, `ncdu`, `wwlog` |
+| `q` | Quit the application (or the current view if nested) | `btop`, `k9s`, `lazygit`, `ncdu` |
 | `Ctrl+C` | Emergency quit, works even if a custom keymap is active | Nearly universal — must never be rebound |
 | `Esc` | Step back: close a panel, cancel a prompt, clear an active filter | `lazygit`, `k9s`, `btop` (opens main menu when nothing else to back out of) |
-| `Tab` / `Shift+Tab` | Cycle focus forward/backward between panes or tabs | `lazygit`, `wwlog` |
-| `/` | Enter a filter or search mode scoped to the current view | `k9s`, `btop`, `ranger`, `wwlog` |
+| `Tab` / `Shift+Tab` | Cycle focus forward/backward between panes or tabs | `lazygit` |
+| `/` | Enter a filter or search mode scoped to the current view | `k9s`, `btop`, `ranger` |
 | `:` | Enter a command-mode prompt for typed commands/navigation | `k9s`, `tig` (via `:` for internal commands) |
 | `j` / `k` | Move down/up one item (vi-style, alternative to arrow keys) | `k9s`, `tig`, `ranger`, `gh-dash`, `lazygit` |
 | `g` / `G` | Jump to top / bottom of the current list (vi-style) | `tig`, `ranger`, most vi-convention TUIs |
@@ -487,8 +485,8 @@ ten-item set is small enough to hold in working memory during an evaluation.
 ### The Charm design philosophy
 
 **What it is:** the aesthetic and interaction guidance from Charm (charm.land), the team behind Bubble Tea /
-Lip Gloss / Bubbles — the most influential *visual-craft* voice in modern TUIs, and the stack both local
-reference projects (`wwlog`, `unspool`) are built on. **Craft rules worth citing:** design-first
+Lip Gloss / Bubbles — the most influential *visual-craft* voice in modern TUIs. **Craft rules worth citing:**
+design-first
 ("designer-built, not just functional"), muted over saturated color, reserve a primary accent for one or two
 elements, dim secondary content while keeping primary near-white, use borders and bold sparingly (whitespace
 separates content better than borders), adaptive color with ANSI-256/16 fallback, and stable panel positions
@@ -521,7 +519,7 @@ consume visual evidence of a TUI actually running.
 **What it is:** a Charm tool that renders a `.tape` script — a small DSL of commands like `Type`, `Sleep`,
 `Enter`, `Wait`, `Output`, and `Require` — into a GIF, MP4, WebM, or raw frames, by replaying it in a headless
 virtual terminal. **When to reach for it:** the target TUI already has a `.tape` file in the repo (common in
-the Charm/Bubble Tea ecosystem, as with `wwlog`'s `examples/wwlog_demo.tape`), or you need a reproducible,
+the Charm/Bubble Tea ecosystem), or you need a reproducible,
 scriptable recording that can be regenerated against a fresh build rather than a one-off manual capture.
 **One-line usage:**
 

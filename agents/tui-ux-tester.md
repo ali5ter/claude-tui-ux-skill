@@ -154,7 +154,7 @@ finding matters — don't score them as extra criteria.
 - Is complexity revealed progressively — a simple default path for newcomers, with advanced capability
   discoverable rather than forced up front?
 
-**Good:** wwlog's splash shows a credential check spinner, then a pre-filled date-range form before the main
+**Good:** a well-built TUI's splash shows a credential check spinner, then a pre-filled date-range form before the main
 view — the user is never staring at an unexplained blank screen.
 
 **Bad:** a TUI that opens directly onto data with zero framing, or fails silently on a missing credential.
@@ -186,7 +186,7 @@ view — the user is never staring at an unexplained blank screen.
   efficiency) — a command palette (`Ctrl+P`-style), direct-jump numbered panels, or customizable keybindings —
   layered on top of the discoverable defaults rather than replacing them?
 
-**Bad example (real, from `unspool`):** `A` (audio-only) and `S` (stop) require Shift while every other action
+**Bad example (real-world):** `A` (audio-only) and `S` (stop) require Shift while every other action
 is a bare lowercase letter — the only place the scheme breaks from single-key-no-modifier, inviting mis-presses.
 
 **Rating rubric:**
@@ -263,7 +263,7 @@ is a bare lowercase letter — the only place the scheme breaks from single-key-
   rather than silently leaving a stale state?
 - Is there a status/notification area, and does it distinguish transient confirmations from persistent state?
 
-**Bad example (real, from `unspool`):** playlist/queue removal applies the UI change immediately and only
+**Bad example (real-world):** playlist/queue removal applies the UI change immediately and only
 surfaces an error string on failure — the row is never restored, leaving the user believing something succeeded
 when it didn't.
 
@@ -287,7 +287,7 @@ when it didn't.
 - Does the help overlay cover every binding, including ones not shown in the current footer?
 - Is a README/demo GIF/cast available for someone evaluating the tool before installing it?
 
-**Bad example (real, from `unspool`):** no `?` help overlay exists at all — `bubbles/help` is already a
+**Bad example (real-world):** no `?` help overlay exists at all — `bubbles/help` is already a
 dependency but unused; the footer shows only a per-tab subset, so some bindings (e.g. audio-only) are never
 discoverable anywhere in-app.
 
@@ -310,7 +310,7 @@ discoverable anywhere in-app.
 - Do config options that are documented actually take effect (no "dead" settings that silently no-op)?
 - Are defaults sensible, documented, and overridable?
 
-**Bad example (real, from `unspool`):** `theme`, `thumbnails`, `view_mode`, and `dearrow` are all defined with
+**Bad example (real-world):** `theme`, `thumbnails`, `view_mode`, and `dearrow` are all defined with
 defaults in config and documented in the README, but the TUI never reads any of them — setting them silently
 does nothing, which is worse than not offering the feature at all.
 
@@ -388,7 +388,7 @@ does nothing, which is worse than not offering the feature at all.
 - Are defaults sensible and safe, so the common path doesn't require the user to actively steer around a
   mistake?
 
-**Bad example (real, from `unspool`):** `UnmuteChannel` exists in the store layer but nothing in the TUI or CLI
+**Bad example (real-world):** `UnmuteChannel` exists in the store layer but nothing in the TUI or CLI
 calls it — muting is a one-way door in the UI despite the product's own stated promise that every auto-hide is
 reversible.
 
@@ -412,7 +412,7 @@ reversible.
   hanging or rendering garbage escape codes?
 - Is the non-interactive output's data model consistent with what the TUI displays (not a stale/different view)?
 
-**Good example (real, from `wwlog`/`unspool`):** both ship `--json`/`--report`/`--offline` flags that mirror the
+**Good example (real-world):** a TUI that ships `--json`/`--report`/`--offline` flags that mirror the
 TUI's own data exactly, so the TUI is never the *only* way to get at the underlying information.
 
 **Rating rubric:**

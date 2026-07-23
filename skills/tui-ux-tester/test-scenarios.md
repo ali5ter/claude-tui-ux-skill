@@ -31,18 +31,18 @@ tmux kill-session -t tui-probe
 - If auth or setup is required, is that communicated in-app rather than a silent hang or crash?
 - Do tabs/views list what's available even before any real data exists?
 
-**Good Example** (real, from `wwlog`): the TUI never opens straight onto a data grid. It runs a credential check
-(with a spinner), then shows a pre-filled 7-day date-range form before the main view — see
-`wwlog/README.md` "Quick start". A user is never staring at an unexplained blank screen:
+**Good Example (real-world)**: the TUI never opens straight onto a data grid. It runs a credential check
+(with a spinner), then shows a pre-filled 7-day date-range form before the main view. A user is never
+staring at an unexplained blank screen:
 
 ```text
-┌─ wwlog ──────────────────────────────────────────────────┐
+┌─ myapp ──────────────────────────────────────────────────┐
 │                                                            │
 │   Checking credentials...  ⠋                              │
 │                                                            │
 └────────────────────────────────────────────────────────────┘
         ↓ (credential check resolves)
-┌─ wwlog ──────────────────────────────────────────────────┐
+┌─ myapp ──────────────────────────────────────────────────┐
 │ Date range                                                │
 │   Start  2026-04-15   (7 days ago)                        │
 │   End    2026-04-22   (today)                             │
@@ -98,9 +98,8 @@ tmux kill-session -t tui-probe
 - Is `Esc` reserved for "back/cancel" only, never repurposed for something else in a different view?
 - Are case-sensitive chords (`Shift+letter`) avoided when every other binding is a bare lowercase letter?
 
-**Bad Example (real, from `unspool`)**: `A` (audio-only) and `S` (stop) require Shift while every other action
-is a bare lowercase letter — the only place the scheme breaks from single-key-no-modifier, inviting mis-presses
-(`unspool/RECOMMENDATIONS.md` §5, "Inconsistent case-sensitive chords").
+**Bad Example (real-world)**: `A` (audio-only) and `S` (stop) require Shift while every other action
+is a bare lowercase letter — the only place the scheme breaks from single-key-no-modifier, inviting mis-presses.
 
 **Good Example**: lazygit's multi-pane "views" — every pane uses the same navigation keys, `Tab`/`]`/`[` cycle
 focus, and the focused pane is always visually distinct (colored border), so the current context is never
@@ -147,11 +146,10 @@ tmux kill-session -t tui-probe
 - Does the overlay cover every binding, including ones never shown in the current footer subset?
 - Does `Esc` (or the same key) close the overlay cleanly, returning focus to where it was?
 
-**Bad Example (real, from `unspool`)**: no `?` help overlay exists at all. `keyMap`
-(`internal/tui/keys.go`) has no `Help` binding, and `footerHints()` (`internal/tui/model.go:588-609`) shows only
+**Bad Example (real-world)**: no `?` help overlay exists at all. The footer shows only
 a context-specific subset per tab/state — bindings like `A` (audio-only) never appear in the Queue/Playlist
-footer even though they may still apply, and there is nowhere in-app to see the full key surface. `bubbles/help`
-is already an imported dependency and goes unused (`unspool/RECOMMENDATIONS.md` §4).
+footer even though they may still apply, and there is nowhere in-app to see the full key surface. A help-overlay
+component is already an imported dependency and goes unused.
 
 **Good Example**: k9s binds `?` to a header/overlay hotkey reference and keeps a context-sensitive footer at all
 times — a user is never more than one keypress from the full list:
@@ -202,12 +200,11 @@ tmux kill-session -t tui-probe
   is it reachable in-app — not just present in the codebase?
 - Does cancelling the confirmation (`Esc`/`n`) leave state completely unchanged?
 
-**Bad Example (real, from `unspool`)**: `store.UnmuteChannel` exists (`internal/store/store.go:215`) but nothing
-in `internal/tui` or `cmd/` calls it — no TUI key, no CLI command. `muteSelectedChannel`
-(`internal/tui/tabkeys.go:203`) only ever adds to the mute list. The product's own PRD (§5.2) states explicitly
-that "every auto-hide is reversible... never asserts certainty," yet a single mis-press of `m` permanently drops
-a channel until someone hand-edits `mutes.json` (`unspool/RECOMMENDATIONS.md` §1). This is a promised-but-missing
-reverse path, not merely an absent confirmation.
+**Bad Example (real-world)**: an unmute operation exists in the underlying store but nothing
+in the TUI or CLI calls it — no key, no command. The mute action only ever adds to the mute list. The
+product's own docs state explicitly that "every auto-hide is reversible... never asserts certainty," yet a
+single mis-press of `m` permanently drops a channel until someone hand-edits the on-disk state file. This is a
+promised-but-missing reverse path, not merely an absent confirmation.
 
 **Good Example**:
 
@@ -253,15 +250,13 @@ grep -rn "view_mode\|thumbnails\|warm-dark" src/
   looks configured and isn't)?
 - Are defaults sensible, documented, and confirmed overridable by the probe above?
 
-**Bad Example (real, from `unspool`)**: `theme`, `thumbnails`, `view_mode`, and `dearrow` are all defined with
-defaults in `config/config.go` (lines 46-49, 126-130) and documented in the README's config block, but
-`internal/tui` never reads any of them. Setting `theme = "warm-dark"` or `view_mode = "grid"` changes nothing,
-silently (`unspool/RECOMMENDATIONS.md` §3).
+**Bad Example (real-world)**: `theme`, `thumbnails`, `view_mode`, and `dearrow` are all defined with
+defaults and documented in the README's config block, but the TUI never reads any of them. Setting
+`theme = "warm-dark"` or `view_mode = "grid"` changes nothing, silently.
 
-**Good Example (real, from `wwlog`)**: the `[targets]` block in `config.toml` (`calories`, `points_daily`,
-`water_fl_oz_target`, etc., documented in `README.md` "Configuration") is read directly by the Nutrition
-tab's bars and by `--report` — setting a target visibly moves the reference line the nutrient bars are drawn
-against, so the option's effect is immediately checkable in the same session that set it.
+**Good Example (real-world)**: a config `[targets]`/settings block is read directly by the relevant view —
+setting a target visibly moves the on-screen reference line the bars are drawn against, so the option's
+effect is immediately checkable in the same session that set it.
 
 ## Scenario 6: Resize to a Small Terminal and Recovery
 
@@ -448,11 +443,9 @@ tmux kill-session -t tui-probe
 - Is the failure surfaced where the action happened, not just in a log the user won't see?
 - Is there a retry path from the failed state, without requiring a full reload?
 
-**Bad Example (real, from `unspool`)**: `handlePlaylistDeleted` (`internal/tui/actions.go:253-265`) and the
-Queue/playlist-item removal paths apply the UI change immediately and, per the comment at `actions.go:255-257`,
+**Bad Example (real-world)**: the Queue/playlist-item removal paths apply the UI change immediately and
 only surface an error string on failure — the row is never restored. A failed delete leaves the user believing
-something is gone from YouTube when it isn't, discoverable only on the next reload
-(`unspool/RECOMMENDATIONS.md` §7).
+something is gone from YouTube when it isn't, discoverable only on the next reload.
 
 **Good Example**:
 
@@ -508,8 +501,8 @@ tmux kill-session -t tui-probe 2>/dev/null
 - If the app intercepts the first `Ctrl+C` for graceful shutdown, does a second one force an immediate exit
   rather than hanging?
 
-**Good Example**: `q` and `Ctrl+C` both quit from the idle view (`wwlog/README.md` "Key bindings": `q` or
-`ctrl+c` → Quit), and typing `/` first moves focus into the filter box, where `q` is treated as ordinary input.
+**Good Example**: `q` and `Ctrl+C` both quit from the idle view, and typing `/` first moves focus into the
+filter box, where `q` is treated as ordinary input.
 
 **Bad Example**:
 
@@ -551,8 +544,8 @@ tmux kill-session -t tui-probe
 - Does a keypress sent mid-operation still register (proves the fetch runs off the render/input thread)?
 - Does completion show a summary distinguishing new/updated/unchanged, not just "done"?
 
-**Good Example (real, from `wwlog`)**: `--archive` reports incremental progress and a categorized summary
-(`wwlog/README.md` "Archive & offline"):
+**Good Example (real-world)**: a long sync/`--archive`-style operation reports incremental progress and a
+categorized summary:
 
 ```text
 Archiving 90 days (2026-03-03 → 2026-05-31)
@@ -563,8 +556,8 @@ Archive complete.
   Stored    95 days total (2026-02-26 → 2026-05-31)
 ```
 
-When part of the API window is unreachable, wwlog degrades instead of hanging or failing outright, and says so
-inline: `note: API unavailable for 3 day(s) — showing archived data where available`.
+When part of the API window is unreachable, the tool degrades instead of hanging or failing outright, and says
+so inline: `note: API unavailable for 3 day(s) — showing archived data where available`.
 
 **Bad Example**:
 
@@ -657,12 +650,11 @@ tuiapp --start 2026-04-20 --end 2026-04-26 --json | jq '.[0].Points.DailyUsed'
 - Is the non-interactive mode documented as a first-class interface (its own README section with examples), not
   a buried afterthought?
 
-**Good Example (real, from `wwlog`)**: `--json`, `--report`, `--export`, and `--offline` all mirror the TUI's
-own data exactly, so the TUI is never the *only* way to reach the underlying information
-(`wwlog/README.md` "JSON pipeline examples", "Options"):
+**Good Example (real-world)**: `--json`, `--report`, `--export`, and `--offline` all mirror the TUI's
+own data exactly, so the TUI is never the *only* way to reach the underlying information:
 
 ```bash
-$ wwlog --start 2026-04-20 --end 2026-04-26 --json \
+$ myapp --start 2026-04-20 --end 2026-04-26 --json \
   | jq '.[] | {date: .Date, used: .Points.DailyUsed, target: .Points.DailyTarget}'
 {"date":"2026-04-20","used":24,"target":26}
 {"date":"2026-04-21","used":27,"target":26}
