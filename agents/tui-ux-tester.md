@@ -98,6 +98,47 @@ step silently rather than padding the library with restated existing patterns.
 
 ---
 
+## Guideline foundations
+
+The 11 criteria below aren't ad hoc — they're the terminal-specific projection of the design canons most
+widely cited for command-line and interactive software. When a finding maps cleanly onto one of these, name it
+(e.g. "violates Nielsen #1, visibility of system status"): a recognized-canon citation gives a recommendation
+authority beyond one evaluator's taste. The primary sources:
+
+- **Command Line Interface Guidelines ([clig.dev](https://clig.dev))** — the modern reference for terminal
+  software. Core stances: human-first design, consistency across programs (leverage muscle memory), ease of
+  discovery (examples and suggested next steps over remember-and-type), "say just enough," robustness, and
+  empathy. Maps to criteria 1, 2, 6, 7, 11.
+- **Nielsen's 10 usability heuristics** — the general-UX canon; it transfers to TUIs almost verbatim. The
+  mapping used below:
+  1. Visibility of system status → criterion 5
+  2. Match between system and the real world (plain language, familiar mental models) → criteria 1, 10
+  3. User control and freedom (emergency exit, undo) → criteria 2, 10
+  4. Consistency and standards → criteria 2, 7
+  5. Error prevention (stop the mistake before it happens) → criterion 10
+  6. Recognition rather than recall (show, don't make them remember) → criterion 6
+  7. Flexibility and efficiency of use (accelerators for experts) → criterion 2
+  8. Aesthetic and minimalist design → criteria 3, 4
+  9. Help users recognize, diagnose, and recover from errors → criterion 10
+  10. Help and documentation → criterion 6
+- **The Charm design philosophy** — the most-cited *aesthetic* guidance for modern TUIs, and the stack both
+  reference projects use. Craft rules: design-first ("designer-built, not just functional"), muted over
+  saturated color, reserve a primary accent for 1–2 elements, dim secondary content while keeping primary
+  near-white, use borders and bold sparingly (whitespace separates better than borders), adaptive color with
+  ANSI-256/16 fallback, and build spatial memory through stable panel positions. Maps to criteria 3, 4, 7.
+- **Accessibility: WCAG2ICT, NO_COLOR, and the "text-mode lie."** A TUI is *not* automatically accessible.
+  Redraw-heavy 2D-grid TUIs (Bubble Tea, Ink, etc.) actively break screen readers by spamming them with
+  full-screen repaints — the linear output stream a screen reader needs is gone. WCAG contrast targets
+  (≈4.5:1 for text, ≈3:1 for UI glyphs/borders), colorblind-safe pairings (never red-vs-green as the only
+  distinction), a text alternative for any meaning carried by ASCII art or symbols, and the 16-color golden
+  rule (the UI must be usable in 16 colors; truecolor may enhance the hierarchy but must not be the only thing
+  creating it) all apply. Maps to criteria 4, 9, 11.
+
+These are lenses, not a separate scorecard: the checks below already embody them. Cite them to explain *why* a
+finding matters — don't score them as extra criteria.
+
+---
+
 ## Evaluation Framework (11 Criteria)
 
 ### 1. Discovery & First-Run Onboarding
@@ -108,6 +149,10 @@ step silently rather than padding the library with restated existing patterns.
 - Is there a visible hint of the primary/next action, not just raw data?
 - If auth or setup is required, is that communicated in-app rather than as a silent hang or crash?
 - Do views/tabs list what's available even when empty (empty states aren't blank)?
+- Does the app speak the user's language — familiar terms and real-world mental models, not internal jargon or
+  implementation names (Nielsen #2, match between system and the real world)?
+- Is complexity revealed progressively — a simple default path for newcomers, with advanced capability
+  discoverable rather than forced up front?
 
 **Good:** wwlog's splash shows a credential check spinner, then a pre-filled date-range form before the main
 view — the user is never staring at an unexplained blank screen.
@@ -137,6 +182,9 @@ view — the user is never staring at an unexplained blank screen.
 - Are destructive/global system shortcuts (`Ctrl+C`, `Ctrl+Z`, `Ctrl+D`) left alone rather than overridden?
 - Are case-sensitive chords (`Shift+letter`) avoided unless there's no other option — they're easy to mis-press
   against the lowercase binding doing something else?
+- Are there accelerators for expert users that don't get in a newcomer's way (Nielsen #7, flexibility and
+  efficiency) — a command palette (`Ctrl+P`-style), direct-jump numbered panels, or customizable keybindings —
+  layered on top of the discoverable defaults rather than replacing them?
 
 **Bad example (real, from `unspool`):** `A` (audio-only) and `S` (stop) require Shift while every other action
 is a bare lowercase letter — the only place the scheme breaks from single-key-no-modifier, inviting mis-presses.
@@ -163,6 +211,10 @@ is a bare lowercase letter — the only place the scheme breaks from single-key-
 - Does the terminal resize gracefully — does the app define a minimum size and re-flow rather than crash or
   clip content when the pane shrinks (check the interaction probe's resize test)?
 - Is the layout constraint-based (percentages/fractions/min-max) rather than hardcoded absolute positions?
+- Do panels keep stable positions across views and sessions so users build spatial memory, rather than
+  rearranging unexpectedly (Nielsen #4; Charm)?
+- Is the design minimalist where it counts — no decorative borders or box-drawing that add visual noise without
+  adding information (Nielsen #8; Charm favors whitespace and spacing over borders to separate content)?
 
 **Rating rubric:**
 
@@ -183,6 +235,13 @@ is a bare lowercase letter — the only place the scheme breaks from single-key-
 - Is `NO_COLOR` respected and is there a graceful fallback for terminals without truecolor/256-color support?
 - Does the app adapt to light vs. dark terminal backgrounds, or at least offer a theme choice?
 - Are graphs/sparklines/bars (if present) legible in monochrome as well as color?
+- Is there a deliberate visual hierarchy rather than uniform weight — secondary content dimmed, primary content
+  near-white or bold, a primary accent reserved for 1–2 key elements, bold and borders used sparingly (Charm
+  craft rules)? An interface where everything shouts equally has no hierarchy.
+- Does it honor the 16-color golden rule — usable in a 16-color terminal, with truecolor enhancing but never
+  solely creating the hierarchy?
+- Are color choices colorblind-safe (never red-vs-green as the *only* distinction), and does any meaning carried
+  by color or an ASCII/Unicode symbol also have a text equivalent (WCAG non-text content)?
 
 **Rating rubric:**
 
@@ -296,6 +355,12 @@ does nothing, which is worse than not offering the feature at all.
 - Given terminals generally lack a screen-reader API, is there at least a non-interactive/pipeline escape hatch
   (see criterion 11) so screen-reader users aren't locked out entirely?
 - Are mouse interactions (if any) optional enhancements, never required?
+- Screen-reader reality (the "text-mode lie"): a redraw-heavy 2D-grid TUI (Bubble Tea, Ink, etc.) actively
+  breaks screen readers by spamming them with full-screen repaints. Does the app offer a linear/plain fallback
+  (e.g. Huh's accessible mode, or the non-interactive mode of criterion 11) rather than assuming "it's text, so
+  it's accessible"?
+- Do foreground/background pairings meet WCAG contrast (≈4.5:1 for text, ≈3:1 for glyphs/borders) on both the
+  light and dark terminal themes the app claims to support?
 
 **Rating rubric:**
 
@@ -317,6 +382,11 @@ does nothing, which is worse than not offering the feature at all.
 - Does the app recover from a failed operation (network error, invalid state) without crashing or corrupting
   its own state file/store?
 - Are error messages shown in-app specific and actionable, not a raw stack trace or a bare "error"?
+- Error *prevention*, not just recovery (Nielsen #5): is input validated at entry (a bad value rejected before
+  it's submitted, not after), and are inapplicable actions disabled/hidden in the current context rather than
+  offered and then failing?
+- Are defaults sensible and safe, so the common path doesn't require the user to actively steer around a
+  mistake?
 
 **Bad example (real, from `unspool`):** `UnmuteChannel` exists in the store layer but nothing in the TUI or CLI
 calls it — muting is a one-way door in the UI despite the product's own stated promise that every auto-hide is

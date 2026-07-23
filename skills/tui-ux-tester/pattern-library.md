@@ -456,6 +456,61 @@ number or symbol, fails a colorblind user and a `NO_COLOR` user identically. Des
 adding color as reinforcement, rather than the reverse, tends to produce interfaces that survive both
 situations without a special-cased fallback design.
 
+## Authoritative guideline sources
+
+Beyond the tool-by-tool patterns above, the skill's evaluation framework is grounded in the named design
+canons most widely cited for terminal and interactive software. `agents/tui-ux-tester.md`'s "Guideline
+foundations" section maps each to specific criteria; this is the reference for what those sources are and why
+they carry weight.
+
+### Command Line Interface Guidelines (clig.dev)
+
+**What it is:** the de facto modern reference for command-line software design, an open-source update of the
+UNIX philosophy for a human-first era (<https://clig.dev>). **Core stances worth citing:** human-first design
+(build for people, not just other programs), consistency across programs (users bring muscle memory from every
+other tool), ease of discovery (lead with examples and suggest the next command rather than expecting
+remember-and-type), "say just enough," robustness, and empathy. **Why it holds up:** it's concrete and
+testable — most of its rules translate directly into pass/fail checks — and it's the shared vocabulary the
+terminal-tooling community actually argues in, so citing it lands with authors.
+
+### Nielsen's 10 usability heuristics
+
+**What they are:** Jakob Nielsen and Rolf Molich's 1990/1994 general-purpose usability heuristics — the single
+most-cited evaluation framework in all of UX. **Why they apply to TUIs:** they're medium-independent (about
+human cognition, not pixels), so they transfer to a text grid almost verbatim: visibility of system status,
+match between system and the real world, user control and freedom, consistency and standards, error prevention,
+recognition rather than recall, flexibility and efficiency of use, aesthetic and minimalist design, help users
+recover from errors, and help and documentation. **Why it holds up:** naming the specific heuristic a finding
+violates ("this is Nielsen #5, error prevention") turns a subjective note into a recognized principle, and the
+ten-item set is small enough to hold in working memory during an evaluation.
+
+### The Charm design philosophy
+
+**What it is:** the aesthetic and interaction guidance from Charm (charm.land), the team behind Bubble Tea /
+Lip Gloss / Bubbles — the most influential *visual-craft* voice in modern TUIs, and the stack both local
+reference projects (`wwlog`, `unspool`) are built on. **Craft rules worth citing:** design-first
+("designer-built, not just functional"), muted over saturated color, reserve a primary accent for one or two
+elements, dim secondary content while keeping primary near-white, use borders and bold sparingly (whitespace
+separates content better than borders), adaptive color with ANSI-256/16 fallback, and stable panel positions
+to build spatial memory. **Why it holds up:** it's the rare source that gives *specific, opinionated* visual
+guidance (not just "use color meaningfully") — which is exactly what's needed to move criterion 4 beyond
+generic advice.
+
+### Accessibility: WCAG2ICT, NO_COLOR, and the "text-mode lie"
+
+**What they are:** the accessibility standards and conventions that apply to terminal software. WCAG2ICT is the
+W3C's guidance on applying WCAG to non-web software (contrast targets of ≈4.5:1 for text and ≈3:1 for
+glyphs/borders; a text alternative for meaning carried by non-text symbols). `NO_COLOR` (<https://no-color.org>)
+is the informal cross-tool convention for suppressing color. The **"text-mode lie"** is the widely documented
+observation that a TUI is *not* automatically accessible: redraw-heavy 2D-grid apps (Bubble Tea, Ink, etc.)
+actively break screen readers by spamming them with full-screen repaints, destroying the linear output stream a
+screen reader depends on. **Rules worth citing:** the 16-color golden rule (usable in 16 colors; truecolor
+enhances but never solely creates the hierarchy), colorblind-safe pairings (never red-vs-green as the only
+distinction), and offering a linear/plain fallback (Huh's accessible mode, or a non-interactive mode) rather
+than assuming "it's text, so it's accessible." **Why it holds up:** it's the area authors most often get wrong
+precisely because the "it runs in a terminal" assumption feels safe — making it the highest-leverage place to
+cite an external standard.
+
 ## Recording & testing tooling
 
 These are the concrete tools this skill's evaluation workflow (`SKILL.md` Step 2) reaches for to produce or

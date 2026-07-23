@@ -31,7 +31,9 @@ explicitly — layout and color findings are marked reduced-confidence rather th
 ## Features
 
 - 11-criteria UX framework tailored to full-screen terminal apps (8 core + 3 extended), 1–5 scoring per
-  dimension, with rubrics grounded in real findings from published Bubble Tea projects
+  dimension — explicitly grounded in the named design canons (clig.dev, Nielsen's 10 heuristics, the Charm
+  design philosophy, WCAG2ICT/NO_COLOR accessibility standards) and in real findings from published Bubble Tea
+  projects, so findings cite recognized principles rather than one evaluator's taste
 - A living `pattern-library.md` cataloging concrete patterns from well-regarded TUIs (btop, lazygit, k9s, yazi,
   Textual apps, the Charm ecosystem) and terminal recording/testing tooling — grows automatically after every
   evaluation that surfaces something new, and further via an on-request **learning mode** for proactive
@@ -233,6 +235,10 @@ it changes only through the two mechanisms above. As of this writing it covers:
   light/dark rendering, truecolor fallback, monochrome-safe design
 - **Recording & testing tooling** — VHS, asciinema, `tmux capture-pane`, `ffmpeg`/`agg` — what each is,
   when to reach for it, one-line usage
+- **Authoritative guideline sources** — clig.dev, Nielsen's 10 usability heuristics, the Charm design
+  philosophy, and terminal accessibility standards (WCAG2ICT, NO_COLOR, the "text-mode lie"), each with why it
+  carries weight; `agents/tui-ux-tester.md`'s "Guideline foundations" maps every one to the numbered criteria
+  it informs
 
 It also draws on two real Bubble Tea projects for grounded, cited good/bad examples throughout
 `agents/tui-ux-tester.md`'s rubrics: `wwlog`'s onboarding splash and `--json`/`--report`/`--offline` pipeline

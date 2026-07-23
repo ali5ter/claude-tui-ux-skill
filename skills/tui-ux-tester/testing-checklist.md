@@ -17,6 +17,12 @@ extracted frames, `.cast`-as-text, or source-only) for anything touching layout,
 - [ ] Identify target user personas (beginner, intermediate, power user / vim-style navigator)
 - [ ] Confirm whether a non-interactive/pipeline mode exists (`--json`, `--report`, `--no-tty`) before testing it
 
+## Guideline foundations
+
+- [ ] Findings are cross-referenced to the named canons where they apply — clig.dev, Nielsen's 10 heuristics,
+      the Charm design philosophy, WCAG2ICT/NO_COLOR (see `agents/tui-ux-tester.md` "Guideline foundations" and
+      `pattern-library.md` "Authoritative guideline sources")
+
 ## 1. Discovery & First-Run Onboarding
 
 ### First Screen
@@ -38,6 +44,13 @@ extracted frames, `.cast`-as-text, or source-only) for anything touching layout,
 - [ ] Views/tabs list what's available even when empty (no unexplained blank panes)
 - [ ] Empty states explain why they're empty and what would populate them
 - [ ] Empty states suggest the action that fills them (e.g. "press `a` to add")
+
+### Language & Progressive Disclosure
+
+- [ ] The app speaks the user's language — familiar terms and mental models, not internal jargon or
+      implementation names (Nielsen #2, match between system and the real world)
+- [ ] Complexity is revealed progressively — a simple default path for newcomers, advanced capability
+      discoverable rather than forced up front
 
 ## 2. Navigation & Keybinding Design
 
@@ -70,6 +83,12 @@ extracted frames, `.cast`-as-text, or source-only) for anything touching layout,
 - [ ] Key bindings are customizable, or the default set is documented as fixed
 - [ ] Mouse clicks (if supported) navigate to the same places as their keyboard equivalents
 
+### Power-User Accelerators
+
+- [ ] Expert accelerators exist without blocking newcomers (Nielsen #7) — e.g. a command palette (`Ctrl+P`),
+      direct-jump numbered panels, or customizable keybindings, layered on top of discoverable defaults
+- [ ] Accelerators are additive: the discoverable path still works for someone who hasn't learned them
+
 ## 3. Layout & Information Architecture
 
 ### Reviewing the Rendered Output
@@ -101,6 +120,12 @@ extracted frames, `.cast`-as-text, or source-only) for anything touching layout,
 - [ ] Layout is constraint-based (percentages/fractions/min-max), not hardcoded absolute positions
 - [ ] Panes are resizable or toggleable, if the app's complexity warrants it
 
+### Spatial Memory & Minimalism
+
+- [ ] Panels keep stable positions across views and sessions so users build spatial memory (Nielsen #4; Charm)
+- [ ] No decorative borders or box-drawing that add visual noise without information (Nielsen #8; Charm favors
+      whitespace over borders to separate content)
+
 ## 4. Visual Design, Color & Theming
 
 ### Reviewing the Rendered Output for Color
@@ -130,6 +155,15 @@ extracted frames, `.cast`-as-text, or source-only) for anything touching layout,
 - [ ] The app adapts to light vs. dark terminal backgrounds, or offers an explicit theme choice
 - [ ] Theme selection (if any) persists across sessions
 - [ ] Text remains legible against both light and dark backgrounds in the frames reviewed
+
+### Visual Hierarchy & Accessible Color
+
+- [ ] Deliberate visual hierarchy, not uniform weight — secondary content dimmed, primary near-white/bold, a
+      primary accent reserved for 1-2 elements, bold and borders used sparingly (Charm craft rules)
+- [ ] The 16-color golden rule holds — usable in a 16-color terminal; truecolor enhances but is not the only
+      thing creating the hierarchy
+- [ ] Color choices are colorblind-safe — never red-vs-green as the only distinction
+- [ ] Meaning carried by color or an ASCII/Unicode symbol also has a text equivalent (WCAG non-text content)
 
 ## 5. Feedback, State & Progress Communication
 
@@ -277,6 +311,14 @@ extracted frames, `.cast`-as-text, or source-only) for anything touching layout,
 - [ ] A non-interactive/pipeline mode exists for users who can't or don't want to use the full-screen UI
       (screen-reader users have no terminal accessibility API to rely on otherwise — see criterion 11)
 
+### Screen-Reader Reality & Contrast
+
+- [ ] The redraw model was considered: a redraw-heavy 2D-grid TUI (Bubble Tea, Ink, etc.) spams screen readers
+      with full-screen repaints — is a linear/plain fallback offered (Huh accessible mode, or the criterion 11
+      non-interactive mode) rather than assuming "it's text, so it's accessible" (the "text-mode lie")?
+- [ ] Foreground/background pairings meet WCAG contrast (≈4.5:1 text, ≈3:1 glyphs/borders) on each terminal
+      theme the app claims to support
+
 ## 10. Error Handling, Recovery & Data Safety
 
 ### Destructive Action Confirmation
@@ -304,6 +346,12 @@ extracted frames, `.cast`-as-text, or source-only) for anything touching layout,
 - [ ] In-app error messages are specific, not a bare "error" or raw stack trace
 - [ ] Error messages are actionable — they suggest what to do next
 - [ ] Errors are visually distinct from normal status messages (see criterion 5)
+
+### Error Prevention
+
+- [ ] Input is validated at entry — a bad value is rejected before submission, not after (Nielsen #5)
+- [ ] Inapplicable actions are disabled/hidden in the current context rather than offered and then failing
+- [ ] Defaults are sensible and safe, so the common path doesn't require actively steering around a mistake
 
 ## 11. Non-Interactive / Pipeline Interop
 
