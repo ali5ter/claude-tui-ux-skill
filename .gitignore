@@ -37,3 +37,5 @@ temp/
 *.tmp
 CLAUDE.md
 CLAUDE.md.backup.*
+AGENTS.md
+AGENTS.md.backup.*
