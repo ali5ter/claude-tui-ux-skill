@@ -32,8 +32,8 @@ explicitly — layout and color findings are marked reduced-confidence rather th
 
 - 11-criteria UX framework tailored to full-screen terminal apps (8 core + 3 extended), 1–5 scoring per
   dimension — explicitly grounded in the named design canons (clig.dev, Nielsen's 10 heuristics, the Charm
-  design philosophy, WCAG2ICT/NO_COLOR accessibility standards) and in real findings from published Bubble Tea
-  projects, so findings cite recognized principles rather than one evaluator's taste
+  design philosophy, WCAG2ICT/NO_COLOR accessibility standards), so findings cite recognized principles rather
+  than one evaluator's taste
 - A living `pattern-library.md` cataloging concrete patterns from well-regarded TUIs (btop, lazygit, k9s, yazi,
   Textual apps, the Charm ecosystem) and terminal recording/testing tooling — grows automatically after every
   evaluation that surfaces something new, and further via an on-request **learning mode** for proactive
@@ -116,37 +116,6 @@ Research new TUI patterns and update the pattern library
 
 The library also grows automatically after any evaluation that surfaces something new, so you rarely need to
 ask for this explicitly.
-
-### Testing this plugin against wwlog or unspool
-
-Both are real Bubble Tea TUIs and were the grounding examples used while building this plugin, so they're
-good first targets:
-
-```bash
-cd ~/Documents/Projects/wwlog    # or unspool
-```
-
-then, in that Claude Code session: `Review this TUI for UX issues`.
-
-Two things to know before you do:
-
-- **`wwlog` needs data in range to reach its TUI.** It defaults to the last 7 days; if your local archive
-  doesn't cover that window it exits with an error instead of launching. Either run `wwlog --archive` first,
-  or point the skill at a range you know is covered (`wwlog --start <date> --end <date>`) — `wwlog --status`
-  shows what's archived. `unspool` needs a completed `unspool --login` first.
-- **Recording quality depends on what's installed.** `tmux` alone (near-universal) gets you the structural
-  probe; installing `vhs` and/or `asciinema`+`ffmpeg`/`agg` (see the table below) gets you real rendered
-  frames the synthesizer agent can actually look at, which is what criteria 3/4/6 need for a non-reduced-
-  confidence score. All three recording paths were smoke-tested end to end against `wwlog` while building
-  this plugin — `tmux-probe.sh` genuinely caught a resize bug (a modal's border clips with no bottom edge at
-  40x10), and both `record-vhs.sh` and `record-asciinema.sh` produced real, correctly rendered frames.
-
-You can also test without a full evaluation run — each script in `skills/tui-ux-tester/scripts/` is a
-standalone template you can run directly:
-
-```bash
-skills/tui-ux-tester/scripts/tmux-probe.sh "./wwlog --start 2026-05-23 --end 2026-06-22" /tmp/probe-out
-```
 
 ### What gets evaluated
 
@@ -255,8 +224,7 @@ it changes only through the two mechanisms above. As of this writing it covers:
   `gh-dash`, Ratatui showcase apps (`gitui`, `bottom`, `bandwhich`, `joshuto`), Textual-based apps (`posting`,
   `dolphie`, `frogmouth`), and the emerging AI-agent-TUI category (streaming/thinking-indicator patterns)
 - **The Charm ecosystem** (Bubble Tea, Lip Gloss, Bubbles, Huh, Glamour, VHS, gum) — what each library is for
-  and one notable convention it encourages, since both local reference projects (`wwlog`, `unspool`) are built
-  on this stack
+  and one notable convention it encourages, since it's the dominant Go TUI stack
 - **Layout paradigms** — persistent multi-panel, Miller columns, drill-down stack, header+scrollable-list,
   widget dashboard — each tied to which exemplar tool uses it and why
 - **A keybinding-convention reference table** (`?`, `q`, `Ctrl+C`, `Esc`, `Tab`, `/`, `:`, `j`/`k`, `g`/`G`,
@@ -269,12 +237,6 @@ it changes only through the two mechanisms above. As of this writing it covers:
   philosophy, and terminal accessibility standards (WCAG2ICT, NO_COLOR, the "text-mode lie"), each with why it
   carries weight; `agents/tui-ux-tester.md`'s "Guideline foundations" maps every one to the numbered criteria
   it informs
-
-It also draws on two real Bubble Tea projects for grounded, cited good/bad examples throughout
-`agents/tui-ux-tester.md`'s rubrics: `wwlog`'s onboarding splash and `--json`/`--report`/`--offline` pipeline
-parity, and several specific findings from `unspool`'s own UX review (a one-way-door mute action, a missing
-`?` help overlay despite `bubbles/help` already being a dependency, dead/no-op config options, an inconsistent
-Shift-chord keybinding, and an optimistic UI update with no rollback on failure).
 
 ## Safety and quality notes
 
